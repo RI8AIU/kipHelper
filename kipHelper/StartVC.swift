@@ -14,15 +14,29 @@ class StartVC: UITableViewController {
         let imageView = UIImageView(image: image)
         return imageView
     }()
-
+    
+    private let cellID = "cell"
+    
+    private let titles = Title.getTitle()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavBar()
+        setNavigationBar()
         setConstraints()
+        setTableView()
+        
     }
     
-    func setNavBar() {
+    func setTableView() {
+        tableView.frame.size = CGSize(width: view.frame.width, height: view.frame.height)
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .white
+        tableView.rowHeight = 100
+        tableView.register(CustomCell.self, forCellReuseIdentifier: cellID)
         
+    }
+    
+    func setNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.addSubview(logo)
         
@@ -41,8 +55,24 @@ class StartVC: UITableViewController {
             
             
         ])
+        
     }
-
-
+ 
 }
 
+extension StartVC {
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        titles.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // Повторное использование ячейки с инденитфикатором cellID
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! CustomCell
+        cell.title.text = titles[indexPath.row].value
+        cell.icon.image = UIImage(named: titles[indexPath.row].value!)
+
+        return cell
+    }
+    
+}
